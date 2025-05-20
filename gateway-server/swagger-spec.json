@@ -1,0 +1,762 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users/signup": {
+      "post": {
+        "operationId": "AppController_signUp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "회원가입 성공"
+          },
+          "400": {
+            "description": "잘못된 요청"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "summary": "회원가입",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/users/login": {
+      "post": {
+        "operationId": "AppController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "로그인 성공"
+          },
+          "401": {
+            "description": "인증 실패"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "summary": "로그인",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/users/refresh-access-token": {
+      "post": {
+        "operationId": "AppController_refreshAccessToken",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "토큰 갱신 성공"
+          },
+          "401": {
+            "description": "인증 실패"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "액세스 토큰 갱신",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "operationId": "AppController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "로그아웃 성공"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "로그아웃",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/users/{id}/role": {
+      "put": {
+        "operationId": "AppController_updateRole",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "role"
+                ],
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "user",
+                      "operator",
+                      "auditor",
+                      "admin"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "역할 업데이트 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "사용자 역할 업데이트",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "operationId": "AppController_getCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "사용자 정보 조회 성공"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "현재 사용자 정보 조회",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events": {
+      "get": {
+        "operationId": "AppController_getAllEvents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "이벤트 목록 조회 성공"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "모든 이벤트 조회",
+        "tags": [
+          "App"
+        ]
+      },
+      "post": {
+        "operationId": "AppController_createEvent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "startTime",
+                  "endTime",
+                  "goal"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "startTime": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endTime": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "goal": {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "count"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "invite",
+                          "attendance"
+                        ]
+                      },
+                      "count": {
+                        "type": "number"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "이벤트 생성 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "이벤트 생성",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events/reward-requests": {
+      "get": {
+        "operationId": "AppController_getRewardRequests",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "리워드 요청 목록 조회 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리워드 요청 목록 조회",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events/{eventId}": {
+      "get": {
+        "operationId": "AppController_getEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "이벤트 조회 성공"
+          },
+          "404": {
+            "description": "이벤트를 찾을 수 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "특정 이벤트 조회",
+        "tags": [
+          "App"
+        ]
+      },
+      "put": {
+        "operationId": "AppController_updateEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "startTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true
+                  },
+                  "endTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true
+                  },
+                  "goal": {
+                    "type": "object",
+                    "required": [
+                      "type",
+                      "count"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "invite",
+                          "attendance"
+                        ]
+                      },
+                      "count": {
+                        "type": "number"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "이벤트 수정 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "404": {
+            "description": "이벤트를 찾을 수 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "이벤트 수정",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events/{eventId}/rewards": {
+      "post": {
+        "operationId": "AppController_createReward",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "quantity"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "point",
+                      "drawCount"
+                    ]
+                  },
+                  "quantity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "리워드 생성 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리워드 생성",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events/{eventId}/rewards/{rewardId}": {
+      "put": {
+        "operationId": "AppController_updateReward",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rewardId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "point",
+                      "drawCount"
+                    ]
+                  },
+                  "quantity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "리워드 수정 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "404": {
+            "description": "리워드를 찾을 수 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리워드 수정",
+        "tags": [
+          "App"
+        ]
+      },
+      "delete": {
+        "operationId": "AppController_deleteReward",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rewardId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "리워드 삭제 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "404": {
+            "description": "리워드를 찾을 수 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리워드 삭제",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events/user/reward-requests": {
+      "get": {
+        "operationId": "AppController_getUserRewardRequests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "리워드 요청 목록 조회 성공"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "사용자의 리워드 요청 목록 조회",
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/events/{eventId}/request-reward": {
+      "post": {
+        "operationId": "AppController_requestReward",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "리워드 요청 성공"
+          },
+          "403": {
+            "description": "권한 없음"
+          },
+          "404": {
+            "description": "이벤트를 찾을 수 없음"
+          },
+          "500": {
+            "description": "서버 내부 오류"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "리워드 요청",
+        "tags": [
+          "App"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Event/Reward Management API",
+    "description": "이벤트/보상 관리 시스템 API 문서",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "SignUpDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "사용자 이메일",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "사용자 비밀번호 (최소 6자)",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LogInDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "사용자 이메일",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "사용자 비밀번호",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      }
+    }
+  }
+}

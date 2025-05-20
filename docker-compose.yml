@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  auth-server:
+    build:
+      context: ./auth-server
+      dockerfile: Dockerfile
+    container_name: auth-server
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  gateway-server:
+    build:
+      context: ./gateway-server
+      dockerfile: Dockerfile
+    container_name: gateway-server
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-server
+      - event-server
+    networks:
+      - app-network
+
+  event-server:
+    build:
+      context: ./event-server
+      dockerfile: Dockerfile
+    container_name: event-server
+    depends_on:
+      - mongodb
+      - auth-server
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data: 
